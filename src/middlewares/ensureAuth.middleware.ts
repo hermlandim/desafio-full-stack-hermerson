@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express"
 import jwt, { VerifyErrors } from "jsonwebtoken"
-import "dotenv/config"
 import { AppError } from "../errors/AppError"
+import "dotenv/config" 
+
+
 
 const ensureAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -14,7 +16,7 @@ const ensureAuthMiddleware = (req: Request, res: Response, next: NextFunction) =
 
     const splitToken = token.split(" ")[1]
 
-    jwt.verify(splitToken, secretKey!, (error: VerifyErrors | null, decoded: string | jwt.JwtPayload | undefined) => {
+    jwt.verify(splitToken, secretKey!, (error: VerifyErrors | null, decoded: any) => {
 
         if(error){
             throw new AppError("invalid token", 401)
@@ -22,7 +24,7 @@ const ensureAuthMiddleware = (req: Request, res: Response, next: NextFunction) =
 
         res.locals.id = decoded?.sub
 
-        res.locals.clientName = decoded //
+        res.locals.clientName = decoded.clientName
 
         return next()
 

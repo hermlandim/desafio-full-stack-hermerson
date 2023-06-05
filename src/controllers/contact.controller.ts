@@ -5,7 +5,8 @@ import { deleteContactService } from "../services/Contacts/deleteContact.service
 import { retrieveContactService } from "../services/Contacts/retrieveContact.service"
 import { updateContactService } from "../services/Contacts/updateContact.service"
 import { TContactRequest, TContactResponse, TContactsResponse } from "../interfaces/contact.interfaces"
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib"
+import { generatePdfContactService } from "../services/Contacts/generatePdfContacts.service"
+import { contactsClientGenerate } from "../libs/pdf/contactsClientGenerator"
 
 
 
@@ -62,46 +63,19 @@ const deleteContactController = async (req: Request, res: Response) => {
 }
 
 
-const generatePdfClientsController = async (req: Request, res: Response) => {
+const generatePdfContactsForClientController = async (req: Request, res: Response) => {
 
     const userId: string = res.locals.id
+    const clientName: string = res.locals.clientName
 
-    const contactsClient: TContactsResponse = await listContactsService(userId)
+    const contactsClient = await generatePdfContactService(userId)
 
-    const pdfDoc = await PDFDocument.create()
-    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
-  
-    const page = pdfDoc.addPage()
-    const { width, height } = page.getSize()
-    const fontSize = 30
-
-    let eixoX = -50
-
-    page.drawText(`${res.locals.clientName.username}`, {
-        x: 50,
-        y: height - 4 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0.53, 0.71),
-      })
-
-    contactsClient.forEach((elem) => {
-        page.drawText(`${elem.email}`, {
-            x: 50,
-            y: height - 4 * fontSize + eixoX,
-            size: fontSize,
-            font: timesRomanFont,
-            color: rgb(0, 0.53, 0.71),
-          })
-        eixoX -= 30
-    })
+    const generatePdf = await contactsClientGenerate(clientName, contactsClient)
 
     res.setHeader('Content-Disposition', 'attachment; filename="documento.pdf"');
     res.setHeader('Content-Type', 'application/pdf');
-  
-    const pdfBytes = await pdfDoc.save()
 
-    return res.end(pdfBytes)
+    return res.end(generatePdf)
 }
 
 
@@ -112,5 +86,5 @@ export { createContactController,
          retrieveContactController, 
          updateContactController, 
          deleteContactController, 
-         generatePdfClientsController 
+         generatePdfContactsForClientController 
         }

@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { ensureDataIsValidMiddleware } from "../middlewares/ensureDataIsValid.middleware"
 import { clientSchemaRequest, clientSchemaUpdateRequest } from "../schemas/client.schemas"
-import { createContactController, deleteContactController, generatePdfClientsController, listContactsController, retrieveContactController, updateContactController } from "../controllers/contact.controller"
+import { createContactController, deleteContactController, generatePdfContactsForClientController, listContactsController, retrieveContactController, updateContactController } from "../controllers/contact.controller"
 import { createClientController, deleteClientController, listClientsController, retrieveClientController, updateClientController } from "../controllers/client.controllers"
 import { ensureAuthMiddleware } from "../middlewares/ensureAuth.middleware"
 import { ensureIsOwnerContactMiddleware } from "../middlewares/ensureIsOwnerContact.middleware"
@@ -18,7 +18,7 @@ clientRoutes.patch("/:id", ensureDataIsValidMiddleware(clientSchemaUpdateRequest
 clientRoutes.delete("/:id", deleteClientController)
 
 clientRoutes.get("/contact", listContactsController)
-clientRoutes.get("/contact/getpdf", generatePdfClientsController)
+clientRoutes.get("/contact/getpdf", generatePdfContactsForClientController)
 clientRoutes.use(ensureIsOwnerContactMiddleware)
 clientRoutes.post("/contact", ensureDataIsValidMiddleware(contactSchemaRequest), createContactController)
 clientRoutes.get("/contact/:id", retrieveContactController)

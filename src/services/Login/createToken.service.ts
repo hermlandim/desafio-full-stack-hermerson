@@ -30,7 +30,7 @@ const createTokenService = async ({email, password}: TLoginUser): Promise<string
 
     const token: string = jwt.sign(
         {
-            username: client.full_name
+            clientName: client.full_name
         },
         process.env.SECRET_KEY!,
         {
