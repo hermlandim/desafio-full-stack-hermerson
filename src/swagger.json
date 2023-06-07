@@ -1,0 +1,234 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "ClieConecta: Gerenciador de Contatos Personalizados",
+        "description": "A API que gerencia os contatos dos seus respectivos clientes conta com dois CRUD's (Cliente & Contatos). Contém o cadastro do cliente e autenticação (login) por token JWT, além de ser bem protegida com validações personalizadas.",
+        "termsOfService": "http://localhost:3000/terms",
+        "contact": {
+            "email": "hermerson_landim@hotmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "API local"
+        }
+    ],
+    "paths": {
+        "/client": {
+            "post": {
+                "sumary": "Cadastro de Cliente",
+                "description": "Cadastra um Cliente",
+                "tags": ["Cliente"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Client-Request"
+                            },
+                            "examples": {
+                                "Exemplo de Entrada Cliente 01": {
+                                    "value": {
+                                        "full_name": "Hérmerson Landim",
+                                        "email": "hermerson_landim@hotmail.com",
+                                        "password": "%ClienteSenha#9999@",
+                                        "phone": "86999999999"
+                                    }
+                                },
+                                "Exemplo de Entrada Cliente 02": {
+                                    "value": {
+                                        "full_name": "Cliente 02",
+                                        "email": "cliente_02@hotmail.com",
+                                        "password": "%ClienteSenha02#9999@",
+                                        "phone": "86988888888"
+                                    }
+                                },
+                                "Exemplo de Entrada Cliente 03": {
+                                    "value": {
+                                        "full_name": "Cliente 03",
+                                        "email": "cliente_03@hotmail.com",
+                                        "password": "%ClienteSenha03#9999@",
+                                        "phone": "86977777777"
+                                    }
+                                },
+                                "Exemplo de Entrada Cliente 04": {
+                                    "value": {
+                                        "full_name": "Cliente 04",
+                                        "email": "cliente_04@hotmail.com",
+                                        "password": "%ClienteSenha04#9999@",
+                                        "phone": "86966666666"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created - Cliente Cadastrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Client-Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Algum Campo Faltando",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "campo_obrigatorio": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflit - Dado Já Existente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal ServerError - Erro do Servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "sumary": "Login Cliente",
+                "description": "Autorização de Cliente - Login",
+                "tags": ["Cliente"],
+                "security": [{ "bearerAuth": [] }],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login-Request"
+                            },
+                            "examples": {
+                                "Exemplo de Login 01": {
+                                    "value": {
+                                        "email": "hermerson_landim@hotmail.com",
+                                        "password": "%ClienteSenha#9999@"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Client-Request": {
+                "type": "object",
+                "properties": {
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "unique": true
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Client-Response": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "unique": true
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    }
+                }
+
+            },
+            "Login-Request": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Login-Response": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "securitySchemes": {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+          }
+    }
+}
